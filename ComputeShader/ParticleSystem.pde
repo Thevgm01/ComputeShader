@@ -1,6 +1,5 @@
 
 class ParticleSystem {
-  ArrayList<Particle> particles = new ArrayList<Particle>();
   FloatList particleAttribList = new FloatList();
   float[] particlesBuffer;
   float[] particlesColorBuffuer;
@@ -13,23 +12,14 @@ class ParticleSystem {
   ParticleSystem(int count) {
 
     numOfParticles = count;
+    particlesBuffer = new float[count * 6];
     for (int i=0; i<count; i++) {
-      Particle p = new Particle();
-
-      p.pos.x = random(-1, 1);
-      p.pos.y = random(-1, 1);
-
-      particleAttribList.append(p.pos.x);
-      particleAttribList.append(p.pos.y);
-      particleAttribList.append(p.vel.x);
-      particleAttribList.append(p.vel.y);
-      particleAttribList.append(p.acc.x);
-      particleAttribList.append(p.acc.y);
-    }
-    
-    particlesBuffer = new float[particleAttribList.size()];
-    for (int i = 0; i<particlesBuffer.length; i++) {
-      particlesBuffer[i] = particleAttribList.get(i);
+      particlesBuffer[i * 6 + 0] = random(-1, 1); // pos X
+      particlesBuffer[i * 6 + 1] = random(-1, 1); // pos Y
+      //particlesBuffer[i * 6 + 2] = 0;           // vel X
+      //particlesBuffer[i * 6 + 3] = 0;           // vel Y
+      //particlesBuffer[i * 6 + 4] = 0;           // acc X
+      //particlesBuffer[i * 6 + 5] = 0;           // acc Y
     }
 
     fbParticles = Buffers.newDirectFloatBuffer(particlesBuffer);
@@ -37,13 +27,8 @@ class ParticleSystem {
     computeProgram = new ComputeProgram(gl, "comp.glsl", fbParticles);
   }
 
-  void loadShaer(String v, String f, String c) {
-    shaderProgram = new ShaderProgram(gl, v, f);
-    computeProgram = new ComputeProgram(gl, c, fbParticles);
-  }
-
   void update() {
-    computeProgram.beginDispatch(1024, 1, 1);
+    computeProgram.beginDispatch(ceil(numOfParticles/1024f), 1, 1);
     shaderProgram.begin();
   }
 
