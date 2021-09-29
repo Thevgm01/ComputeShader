@@ -1,5 +1,7 @@
 
 class ParticleSystem {
+  int computeWorkGroupSize;
+
   FloatList particleAttribList = new FloatList();
   float[] particlesBuffer;
   float[] particlesColorBuffuer;
@@ -10,6 +12,9 @@ class ParticleSystem {
   ComputeProgram computeProgram;
 
   ParticleSystem(int count) {
+    IntBuffer getBuffer = IntBuffer.allocate(1);
+    gl.glGetIntegeri_v(GL4.GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, getBuffer);
+    computeWorkGroupSize = getBuffer.get(0);
 
     numOfParticles = count;
     particlesBuffer = new float[count * 6];
@@ -24,11 +29,11 @@ class ParticleSystem {
 
     fbParticles = Buffers.newDirectFloatBuffer(particlesBuffer);
     shaderProgram = new ShaderProgram(gl, "vert.glsl", "frag.glsl");
-    computeProgram = new ComputeProgram(gl, "comp.glsl", fbParticles);
+    computeProgram = new ComputeProgram(gl, "comp.glsl", computeWorkGroupSize, fbParticles);
   }
 
   void update() {
-    computeProgram.beginDispatch(ceil(numOfParticles/1024f), 1, 1);
+    computeProgram.beginDispatch(ceil(numOfParticles/(float)computeWorkGroupSize), 1, 1);
     shaderProgram.begin();
   }
 

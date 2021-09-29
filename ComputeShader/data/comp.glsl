@@ -14,7 +14,8 @@ layout(std430, binding = 0) buffer particlesBuffer
 	Particle particles[];
 };
 
-layout(local_size_x = 1024, local_size_y = 1, local_size_z = 1) in;
+// Seems like gl_WorkGroupSize doesn't work for some reason?
+layout(local_size_x = %WORK_GROUP_SIZE%, local_size_y = 1, local_size_z = 1) in;
 
 void main()
 {

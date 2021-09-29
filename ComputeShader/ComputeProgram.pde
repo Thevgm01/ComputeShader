@@ -8,10 +8,11 @@ class ComputeProgram
 
   GL4 gl;
 
-  ComputeProgram(GL4 gl, String compute, FloatBuffer verticesFB) {
+  ComputeProgram(GL4 gl, String compute, int computeSize, FloatBuffer verticesFB) {
     this.gl = gl;
 
     String[] vlines = new String[]{PApplet.join(loadStrings(compute), "\n")};
+    vlines[0] = vlines[0].replace("%WORK_GROUP_SIZE%", String.valueOf(computeSize));
     int[] vlengths = new int[]{vlines[0].length()};
     compute_shader = gl.glCreateShader(GL4.GL_COMPUTE_SHADER);
     gl.glShaderSource(compute_shader, vlines.length, vlines, vlengths, 0);

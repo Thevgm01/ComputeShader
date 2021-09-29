@@ -1,5 +1,6 @@
 import com.jogamp.opengl.*;
 import com.jogamp.common.nio.Buffers;
+import java.nio.IntBuffer;
 import java.nio.FloatBuffer;
 
 ParticleSystem ps;
